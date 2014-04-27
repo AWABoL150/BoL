@@ -22,7 +22,7 @@ function AfterDownload()
     DOWNLOAD_COUNT = DOWNLOAD_COUNT - 1
     if DOWNLOAD_COUNT == 0 then
         DOWNLOADING_LIBS = false
-        print("<b>[Morgana]: Required libraries downloaded successfully, please reload (double F9).</b>")
+        print("<b>[Zyra]: Required libraries downloaded successfully, please reload (double F9).</b>")
     end
 end
 
