@@ -1,4 +1,4 @@
-local VERSION = "0.3"
+local VERSION = "0.4"
 
 if myHero.charName ~= "Zyra" then return end
 
@@ -103,7 +103,7 @@ local SpellE = {Speed = 1400 , Range =1050 , Delay = 0.5, Width = 70}
 
 local SpellR = {Range =700 , Delay = 0.5, Width = 500}
 
-local Pstacks = 0 
+local Pstacks = 0
 
 local AA = {Range= 550}
 
@@ -124,7 +124,7 @@ end
 
 function Init()
 
---Full Spells 
+--Full Spells
 Q = Spell(_Q, SpellQ.Range)
 W = Spell(_W, SpellW.Range)
 E = Spell(_E, SpellE.Range)
@@ -132,13 +132,13 @@ R = Spell(_R, SpellR.Range)
 
 --W skillshot
 Q:SetSkillshot(VP, SKILLSHOT_CIRCULAR, SpellQ.Width, SpellQ.Delay, false)
-Q:SetAOE(true,SpellQ.Width,0)--sets Aoe for Q 
+Q:SetAOE(true,SpellQ.Width,0)--sets Aoe for Q
 
 E:SetSkillshot(VP, SKILLSHOT_LINEAR, SpellE.Width, SpellE.Delay, SpellE.Speed, false)
 
 R:SetSkillshot(VP, SKILLSHOT_CIRCULAR, SpellR.Width, SpellR.Delay, false)
 
-R:SetAOE(true,SpellR.Width,0)--sets aoe For R 
+R:SetAOE(true,SpellR.Width,0)--sets aoe For R
 
 --minion manager
 EnemyMinions = minionManager(MINION_ENEMY, 1100, myHero, MINION_SORT_MAXHEALTH_DEC)
@@ -169,14 +169,14 @@ Config:addParam("Farm", "Farm", SCRIPT_PARAM_ONKEYDOWN, false, string.byte('V'))
 Config:addSubMenu("Orbwalk", "Orbwalk")
 Orbwalker:LoadToMenu(Config.Orbwalk)
 
---Target Selector 
+--Target Selector
 
 Config:addSubMenu("Target Selector", "TS")
 TS:AddToMenu(Config.TS)
 
 --Combo options
 
---Combo Type N 1 
+--Combo Type N 1
 Config:addSubMenu("Combo options", "ComboSub")
 Config.ComboSub:addSubMenu("Combo Q>Seed>E options ", "ComboSub1")
 Config.ComboSub.ComboSub1:addParam("useQ", "Use Q", SCRIPT_PARAM_ONOFF, true)
@@ -184,26 +184,26 @@ Config.ComboSub.ComboSub1:addParam("useW", "Use W", SCRIPT_PARAM_ONOFF, true)
 Config.ComboSub.ComboSub1:addParam("useE", "Use E", SCRIPT_PARAM_ONOFF, true)
 
 
---Combo Type N 2 
+--Combo Type N 2
 --Config.ComboSub:addSubMenu("Combo E>Seed>Q options ", "ComboSub2")
 --Config.ComboSub.ComboSub2:addParam("useQ", "Use Q", SCRIPT_PARAM_ONOFF, true)
 --Config.ComboSub.ComboSub2:addParam("useW", "Use W", SCRIPT_PARAM_ONOFF, true)
 --Config.ComboSub.ComboSub2:addParam("useE", "Use E", SCRIPT_PARAM_ONOFF, true)
 
 
---Hitchances 
+--Hitchances
 Config.ComboSub:addSubMenu("Hit chances ", "HitSub")
 Config.ComboSub.HitSub:addParam("Qhitchance", "QHitchance", SCRIPT_PARAM_SLICE, 2, 1, 2, 0)
 Config.ComboSub.HitSub:addParam("Ehitchance", "EHitchance", SCRIPT_PARAM_SLICE, 2, 1, 2, 0)
 
 
---Harass 
+--Harass
 Config:addSubMenu("Harass options", "HarassSub")
 Config.HarassSub:addParam("useQ", "Use Q", SCRIPT_PARAM_ONOFF, true)
 Config.HarassSub:addParam("useW", "Use W", SCRIPT_PARAM_ONOFF, true)
 Config.HarassSub:addParam("useE", "Use E", SCRIPT_PARAM_ONOFF, true)
 
---Jungle Farm 
+--Jungle Farm
 Config:addSubMenu("JungleFarm options", "JSub")
 Config.JSub:addParam("useQ", "Use Q", SCRIPT_PARAM_ONOFF, true)
 Config.JSub:addParam("useW", "Use W", SCRIPT_PARAM_ONOFF, true)
@@ -223,7 +223,7 @@ Config.Ultimate:addParam("AutoR",  "Auto ultimate if ", SCRIPT_PARAM_LIST, 1, { 
 
 --Advanced options
 Config:addSubMenu("Advanced  options", "ASub")
-Config.ASub:addParam("useE", "Auto Use E on Gapclose", SCRIPT_PARAM_ONOFF, true) 
+Config.ASub:addParam("useE", "Auto Use E on Gapclose", SCRIPT_PARAM_ONOFF, true)
 Config.ASub:addParam("useP", "Auto Use Passive on Lowest Enemy", SCRIPT_PARAM_ONOFF, true)
 
 --Draw
@@ -245,72 +245,72 @@ function Combo()
 Q:SetHitChance(Config.ComboSub.HitSub.Qhitchance)
 E:SetHitChance(Config.ComboSub.HitSub.Ehitchance)
 
---Targets 
+--Targets
 local Qfound = TS:GetTarget(SpellQ.Range)
 local Wfound = TS:GetTarget(SpellW.Range)
 local Efound = TS:GetTarget(SpellE.Range)
 local Rfound = TS:GetTarget(SpellR.Range)
 
-if Efound and E:IsReady() and Config.ComboSub.ComboSub1.useE and GetDistance(Efound)< SpellE.Range then 
+if Efound and E:IsReady() and Config.ComboSub.ComboSub1.useE  then
 
 E:Cast(Efound)
-if W:IsReady() then 
+if W:IsReady() then
 W:Cast(Efound)
-end 
+end
 
-end 
+end
 
 
-if Qfound and Q:IsReady() and Config.ComboSub.ComboSub1.useQ and (not E:IsReady() or not Config.ComboSub.ComboSub1.useE) then 
+if Qfound and Q:IsReady() and Config.ComboSub.ComboSub1.useQ and (not E:IsReady() or not Config.ComboSub.ComboSub1.useE) then
 
 
 Q:Cast(Qfound)
-if W:IsReady() then 
+if W:IsReady() then
 W:Cast(Qfound)
-end 
+end
 
-end 
+end
 
  if Wfound and W:IsReady() and  Config.ComboSub.ComboSub1.useW  and TargetHaveBuff('zyragraspingrootshold',Wfound)  then
 W:Cast(Wfound)
 
-end 
+end
 
 end
-  
-    
 
 
-function Harass() 
+
+
+function Harass()
 local Qfound = TS:GetTarget(SpellQ.Range)
 local Wfound = TS:GetTarget(SpellW.Range)
 local Efound = TS:GetTarget(SpellE.Range)
 
-if Efound and E:IsReady() and Config.HarassSub.useE then 
+if Efound and E:IsReady() and Config.HarassSub.useE then
 
-E:Cast(Efound) 
+E:Cast(Efound)
 
-if W:IsReady() then 
+if W:IsReady() then
 
 W:Cast(Efound)
 
 end
-end 
+end
 
-if Qfound and Q:IsReady() and Config.HarassSub.useQ then 
+if Qfound and Q:IsReady() and Config.HarassSub.useQ then
 
 Q:Cast(Qfound)
-    
-if W:IsReady() then 
+
+if W:IsReady() then
 
 W:Cast(Qfound)
 
-end 
+end
 
-end 
+end
 
 
-end 
+end
 
 function JFarm()
 
@@ -326,13 +326,13 @@ local BestPos, BestHit = GetBestCircularFarmPosition(SpellQ.Range, SpellQ.Width,
 
 CastSpell(_Q, BestPos.x, BestPos.z)
 
-if Config.JSub.useW then 
+if Config.JSub.useW then
 
 if W:IsReady() then
 
 CastSpell(_W, BestPos.x, BestPos.z)
-end 
-end 
+end
+end
 
 end
 
@@ -354,8 +354,8 @@ local Minion_Object = EnemyMinions.objects[1]
 
 if Minion_Object then
 
- if Config.FSub.useQ  and (not E:IsReady() or not Config.FSub.useE) then 
- 
+ if Config.FSub.useQ  and (not E:IsReady() or not Config.FSub.useE) then
+
 local RangedMinions = SelectUnits(EnemyMinions.objects, function(t) return (t.charName:lower():find("wizard") or t.charName:lower():find("caster")) and ValidTarget(t) end)
 
 RangedMinions = GetPredictedPositionsTable(VP, RangedMinions, SpellQ.Delay , SpellQ.Width , SpellQ.Width , math.huge, myHero, false)
@@ -368,13 +368,13 @@ if BestHit > 2 then
 CastSpell(_Q, BestPos.x, BestPos.z)
 
 
-if Config.FSub.useW then 
+if Config.FSub.useW then
 
 CastSpell(_W, BestPos.x, BestPos.z)
 
-end 
+end
 
-if not RangedMinions then 
+if not RangedMinions then
 
 local BestPos, BestHit = GetBestCircularFarmPosition(SpellQ.Range, SpellQ.Width, EnemyMinions)
 
@@ -382,17 +382,17 @@ if BestHit > 2 then
 
 CastSpell(_Q, BestPos.x, BestPos.z)
 
-end 
-end 
+end
+end
 
 
 
 do return end
 
 end
-end 
+end
 
-if Config.FSub.useE then 
+if Config.FSub.useE then
 
 local BestPos, BestHit = GetBestLineFarmPosition(SpellE.Range, SpellE.Width, EnemyMinions.objects)
 
@@ -404,16 +404,16 @@ do return end
 
 end
 
-    
-end 
-end 
-end 
+
+end
+end
+end
 
 
 function OnGainBuff(unit, buff)
     if unit.isMe and buff.name == 'zyrapqueenofthorns' then
-        Imhalfdead = true 
-    end 
+        Imhalfdead = true
+    end
 end
 
 
@@ -421,27 +421,27 @@ end
 function OnLoseBuff(unit, buff)
     if unit.isMe and buff.name == 'zyrapqueenofthorns' then
         Imhalfdead = false
-    end 
+    end
 end
 
 
-function AutoCastPassive() 
-if Imhalfdead then 
+function AutoCastPassive()
+if Imhalfdead then
 local Enemies = GetEnemyHeroes()
 local passiveDmg = 80 + (20*myHero.level)
 for i, enemy in pairs(Enemies) do
-if passiveDmg >= enemy.health then 
-E:Cast(enemy) 
-end 
-end 
-end 
-end 
+if passiveDmg >= enemy.health then
+E:Cast(enemy)
+end
+end
+end
+end
 
-function AutoTracker() 
+function AutoTracker()
 local Rfound = TS:GetTarget(SpellR.Range)
 local MinimumHit = Config.Ultimate.AutoR - 1
-if Rfound ~= nil  then 
-if R:IsReady()  then 
+if Rfound ~= nil  then
+if R:IsReady()  then
 
 local AOECastPosition, MainTargetHitChance, nTargets = VP:GetCircularAOECastPosition(Rfound, SpellR.Delay, SpellR.Width, SpellR.Range, SpellR.Speed)
 
@@ -449,10 +449,10 @@ if nTargets >= MinimumHit then
 
 CastSpell(_R, AOECastPosition.x, AOECastPosition.z)
 
-end 
-end 
-end 
-end 
+end
+end
+end
+end
 
 
 
@@ -466,11 +466,11 @@ if Loaded then
 
 local Rfound = TS:GetTarget(SpellR.Range)
 
-if Rfound and Config.Ultimate.AutoAim then 
+if Rfound and Config.Ultimate.AutoAim then
 
 R:Cast(Rfound)
 
- end 
+ end
 
 
 if Config.Combo then
@@ -481,41 +481,41 @@ Combo()
 end
 
 
-if Config.Harass then 
+if Config.Harass then
 
     Harass()
 
-end 
+end
 
 if Config.JSub.JFarm then
 
     JFarm()
 
-end 
+end
 
-if Config.Farm then 
+if Config.Farm then
 
     farm()
 
-end 
+end
 
-if Config.ASub.useP then 
+if Config.ASub.useP then
 
 AutoCastPassive()
 
-end 
+end
 
-if Config.ASub.useE then 
+if Config.ASub.useE then
 
 opshit()
 
-end 
+end
 
 if Config.Ultimate.AutoR - 1 >= 2  then
 
 AutoTracker()
 
-end 
+end
 
 end
 end
@@ -537,7 +537,7 @@ if not spellExpired and (GetTickCount() - informationTable.spellCastedTick) <= (
                 --print('Trying to stop gapclose with E ')
                 CastSpell(_E,unit.x,unit.y)
             end
-                        
+
         else
             spellExpired = true
             informationTable = {}
@@ -597,9 +597,9 @@ if Config.ASub.useE then
                 end
             end
         end
-    end 
-    
-end 
+    end
+
+end
 
 
 
