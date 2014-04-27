@@ -1,4 +1,4 @@
-local VERSION = "0.2"
+local VERSION = "0.3"
 
 if myHero.charName ~= "Zyra" then return end
 
@@ -466,11 +466,11 @@ if Loaded then
 
 local Rfound = TS:GetTarget(SpellR.Range)
 
-if Config.Ultimate.AutoAim then 
+if Rfound and Config.Ultimate.AutoAim then 
 
 R:Cast(Rfound)
 
-    end 
+ end 
 
 
 if Config.Combo then
