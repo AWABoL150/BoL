@@ -1,4 +1,4 @@
-local VERSION = "0.4"
+local VERSION = "0.5"
 
 if myHero.charName ~= "Quinn" then return end
 
@@ -125,7 +125,7 @@ E = Spell(_E, SpellE.Range)
 R = Spell(_R, SpellR.Range)
 
 --Q skillshot
-Q:SetSkillshot(VP, SKILLSHOT_LINEAR, SpellW.Width, SpellW.Delay, SpellW.Delay, true)
+Q:SetSkillshot(VP, SKILLSHOT_LINEAR, SpellQ.Width, SpellQ.Delay, SpellQ.Speed, true)
 
 --Minion manager for incoming farming
 EnemyMinions = minionManager(MINION_ENEMY, 1100, myHero, MINION_SORT_MAXHEALTH_DEC)
