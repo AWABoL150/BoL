@@ -1,4 +1,4 @@
-local VERSION = "0.4"
+local VERSION = "0.5"
 
 if myHero.charName ~= "Twitch" then return end
 
@@ -116,7 +116,7 @@ W = Spell(_W, SpellW.Range)
 E = Spell(_E, SpellE.Range)
 
 --W skillshot
-W:SetSkillshot(VP, SKILLSHOT_CIRCULAR, SpellW.Width, SpellW.Delay, SpellW.Delay, false)
+W:SetSkillshot(VP, SKILLSHOT_CIRCULAR, SpellW.Width, SpellW.Delay, SpellW.Speed, false)
 W:SetAOE(true,SpellW.Width,0)
 --Minion manager for incoming farming
 EnemyMinions = minionManager(MINION_ENEMY, 1100, myHero, MINION_SORT_MAXHEALTH_DEC)
