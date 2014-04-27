@@ -1,4 +1,4 @@
-local VERSION = "0.3"
+local VERSION = "0.4"
 
 if myHero.charName ~= "Graves" then return end
 
@@ -118,7 +118,7 @@ R = Spell(_R, SpellR.Range)
 
 Q:SetSkillshot(VP, SKILLSHOT_CONE, SpellQ.Width,SpellQ.Delay, SpellQ.Speed, false)
 R:SetSkillshot(VP, SKILLSHOT_LINEAR,SpellR.Width, SpellR.Delay, SpellR.Speed, false)
-W:SetSkillshot(VP, SKILLSHOT_CIRCULAR, SpellW.Width, SpellW.Delay, SpellW.Delay, false)
+W:SetSkillshot(VP, SKILLSHOT_CIRCULAR, SpellW.Width, SpellW.Delay, SpellW.Speed, false)
 W:SetAOE(true,SpellW.Width,0)
 
 
