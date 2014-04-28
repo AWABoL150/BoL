@@ -1,4 +1,4 @@
-local VERSION = "0.5"
+local VERSION = "0.6"
 
 if myHero.charName ~= "Twitch" then return end
 
@@ -80,7 +80,7 @@ AddTickCallback(update)
 
 
 
-local FullCombo = {_AA, _AA, _AA, _AA, _AA, _AA, _E ,_IGNITE}
+local FullCombo = {ItemManager:GetItem("BOTRK"):GetId(),_AA, _AA, _AA, _AA, _AA, _AA, _E ,_IGNITE}
 
 
 require 'VPrediction'
@@ -178,6 +178,11 @@ W:SetHitChance(Config.ComboSub.Wsub.Whitchance)
 --Targets
 local Efound = TS:GetTarget(SpellE.Range)
 local Wfound = TS:GetTarget(SpellW.Range)
+--Botrk 
+if Wfound then
+ItemManager:CastOffensiveItems(Wfound)
+end 
+
 --W cast
 if  Wfound and W:IsReady() and Config.ComboSub.Wsub.useW then
 
