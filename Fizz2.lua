@@ -279,7 +279,7 @@ CastSpell(_W)
 end
 
 if  E:IsReady() and Menu.Combo.UseE and Etarget then
-print('called')
+
 castE(Etarget) 
 
 end 
