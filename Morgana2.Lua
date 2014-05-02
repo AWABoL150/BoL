@@ -1,4 +1,4 @@
-local VERSION = "0.6"
+local VERSION = "0.7"
 
 --Auto Download Required LIBS
 
@@ -267,7 +267,6 @@ end
 
 
 function opshit()
-
 if not spellExpired and (GetTickCount() - informationTable.spellCastedTick) <= (informationTable.spellRange/informationTable.spellSpeed)*1000 then
             local spellDirection     = (informationTable.spellEndPos - informationTable.spellStartPos):normalized()
             local spellStartPosition = informationTable.spellStartPos + spellDirection
@@ -279,7 +278,7 @@ if not spellExpired and (GetTickCount() - informationTable.spellCastedTick) <= (
 
             if lineSegment:distance(heroPosition) <= 200 and Q:IsReady() then
             	--print('Dodging dangerous spell with E')
-                CastSpell(_Q,unit.x,unit.y)
+               
             end
 						
         else
