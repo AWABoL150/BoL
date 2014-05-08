@@ -1,8 +1,10 @@
-local VERSION = "0.8"
+local VERSION = "0.9"
 
 if myHero.charName ~= "Ezreal" then return end
 
 require 'VPrediction'
+require 'SourceLib'
+require 'SOW'
 
 local Config = nil
 
@@ -13,6 +15,8 @@ local SpellQ = {Speed = 2000, Range = 1200, Delay = 0.25, Width = 60}
 local SpellW = {Speed = 1600, Range = 1050, Delay = 0.25, Width = 80}
 
 local SpellR = {Range= 3000 ,Width = 160, Speed = 2000, Delay= 1}
+
+local FullCombo = {_Q , _W , _AA , _Q , _R}
 
 local WRange, RRange = nil, nil
 
@@ -27,7 +31,7 @@ local attacked = false
 
 
 function getDownloadVersion(response)
-        latestVersion = response
+   latestVersion = response
 				
 				
 end
@@ -85,6 +89,15 @@ end
 
 
 function Menu()
+
+	orbwalker = SOW(VP)
+	DamageCalculator = DamageLib()
+
+	DamageCalculator:RegisterDamageSource(_Q, _PHYSICAL , 25 , 45 , _PHYSCAL , _AD , 1 ,function() return (player:CanUseSpell(_Q) == READY)end)
+	DamageCalculator:RegisterDamageSource(_W,_MAGIC, 25 , 45 , _MAGIC , _AP , 0.8 ,function() return (player:CanUseSpell(_W) == READY)end)
+	DamageCalculator:RegisterDamageSource(_R, _MAGIC , 200 , 150 ,_PHYSICAL , _AD, 1 ,function() return (player:CanUseSpell(_R) == READY)end)
+
+
 	Config = scriptConfig("Ezreal", "Ezreal")
 	Config:addParam("Combo", "Combo", SCRIPT_PARAM_ONKEYDOWN, false, 32)
 	Config:addParam("Harass", "Harass", SCRIPT_PARAM_ONKEYDOWN, false, string.byte('C'))
@@ -92,6 +105,7 @@ function Menu()
 	Config:addParam("Laneclear", "will use Mystic shot to lane clear", SCRIPT_PARAM_ONKEYDOWN, false, string.byte('C'))
 	Config:addSubMenu("Combo options", "ComboSub")
 	Config:addSubMenu("Harass options", "HarassSub")
+	Config:addSubMenu("Orbwalker","Orbwalker")
 	Config:addSubMenu("Farm options", "FarmSub")
 	Config:addSubMenu("KS", "KS")
 	Config:addSubMenu("Ultimate", "Ultimate")
@@ -107,8 +121,11 @@ function Menu()
 	Config.HarassSub:addParam("useW", "Use W", SCRIPT_PARAM_ONOFF, true)
 	Config.HarassSub:addParam("Enabled2", "Harass (TOGGLE)!", SCRIPT_PARAM_ONKEYTOGGLE, false, string.byte("L"))
 
-  --farm
-  Config.FarmSub:addParam("useQ", "Use Q to farm", SCRIPT_PARAM_ONOFF, true)
+	--Orbwalker
+	orbwalker:LoadToMenu(Config.Orbwalker) 
+
+    --farm
+    Config.FarmSub:addParam("useQ", "Use Q to farm", SCRIPT_PARAM_ONOFF, true)
 	
 	--Ks
 	Config.KS:addParam("useQ", "Use Q", SCRIPT_PARAM_ONOFF, true)
@@ -116,14 +133,16 @@ function Menu()
 	Config.KS:addParam("useR", "execute targets with R", SCRIPT_PARAM_ONOFF, true)
 	
 	--Ultimate
-Config.Ultimate:addParam("AutoR",  "Auto ultimate if ", SCRIPT_PARAM_LIST, 1, { "No", ">0 hit", ">1 hit", ">2 hit", ">3 hit", ">4 hit" })
-	Config.Ultimate:addParam("AutoAim", "AutoAim your R ", SCRIPT_PARAM_ONKEYDOWN, false,string.byte('R'))
+    Config.Ultimate:addParam("AutoR",  "Auto ultimate if ", SCRIPT_PARAM_LIST, 1, { "No", ">0 hit", ">1 hit", ">2 hit", ">3 hit", ">4 hit" })
+    Config.Ultimate:addParam("UltBuff","Buff Dmg",SCRIPT_PARAM_SLICE,200,1,200,0)
+	Config.Ultimate:addParam("AutoAim", "AutoAim your R ", SCRIPT_PARAM_ONKEYDOWN, false,string.byte('A'))
 
 
 	--Draw
 	Config.Draw:addParam("DrawQ", "Draw Q Range", SCRIPT_PARAM_ONOFF, true)
 	Config.Draw:addParam("DrawW", "Draw W Range", SCRIPT_PARAM_ONOFF, true)
 	Config.Draw:addParam("Drawkillable", "Draw killable enemy with ulti", SCRIPT_PARAM_ONOFF, true)
+	DamageCalculator:AddToMenu(Config.Draw,FullCombo)
 
 	--Extras
 	Config.Extras:addParam("Debug", "Debug", SCRIPT_PARAM_ONOFF, false)
@@ -135,44 +154,60 @@ Config.Ultimate:addParam("AutoR",  "Auto ultimate if ", SCRIPT_PARAM_LIST, 1, { 
 	Config:permaShow("Laneclear")
 	end
 
-	--Credit Trees
+	
+--Credit Trees	
 function GetCustomTarget()
+
 	ts:update()
+	
 	ts2:update()
-    if _G.MMA_Target and _G.MMA_Target.type == myHero.type then return _G.MMA_Target end
-    if _G.AutoCarry and _G.AutoCarry.Crosshair and _G.AutoCarry.Attack_Crosshair and _G.AutoCarry.Attack_Crosshair.target and _G.AutoCarry.Attack_Crosshair.target.type == myHero.type then return _G.AutoCarry.Attack_Crosshair.target end
-    return ts.target
+	
+ if _G.MMA_Target and _G.MMA_Target.type == myHero.type then 
+ return _G.MMA_Target 
+end
+
+if _G.AutoCarry and _G.AutoCarry.Crosshair and _G.AutoCarry.Attack_Crosshair and _G.AutoCarry.Attack_Crosshair.target and _G.AutoCarry.Attack_Crosshair.target.type == myHero.type then 
+return _G.AutoCarry.Attack_Crosshair.target
+end
+
+return ts.target
+
 end
 --End Credit Trees
+
 function OnTick()
 	if initDone then
-		EnemyMinions:update()
-		Check()
-		target = GetCustomTarget()
-		Qtarget = ts.target
-		Rtarget = ts2.target
-		if Config.Combo and target ~= nil then
-			Combo(target)
-		elseif  Config.Combo and Qtarget ~= nil then
-			Combo(Qtarget)
-		end
+EnemyMinions:update()
+Check()
+target = GetCustomTarget()
+Qtarget = ts.target
+Rtarget = ts2.target
+	if Config.Combo and target ~= nil then
+     	Combo(target)
+elseif  Config.Combo and Qtarget ~= nil then
 
-		if Config.Harass and target ~= nil then
-			Harass(target)
-		elseif Config.Harass and Qtarget ~= nil then
-			Harass(Qtarget)
-		end
-		
-	if	Config.HarassSub.Enabled2 and target ~= nil then
-	Harass(target)
-	elseif Config.HarassSub.Enabled2 and Qtarget ~= nil then
-			Harass(Qtarget)
-		end
+  Combo(Qtarget)
 
-		if Config.Farm  and Config.FarmSub.useQ then farmQ()
-		end
-		if Config.Laneclear then farm()
+	end
+
+if Config.Harass and target ~= nil then
+ Harass(target)
+
+elseif Config.Harass and Qtarget ~= nil then
+Harass(Qtarget)
 end
+
+if	Config.HarassSub.Enabled2 and target ~= nil then
+Harass(target)
+elseif Config.HarassSub.Enabled2 and Qtarget ~= nil then
+Harass(Qtarget)
+end
+
+if Config.Farm  and Config.FarmSub.useQ then farmQ() end 
+
+if Config.Laneclear then farm() end 
+
+
 if Config.Ultimate.AutoAim then CastR(Rtarget) end
 if Config.Ultimate.AutoR - 1 >= 2 then
 if target ~= nil then
@@ -187,11 +222,8 @@ end
 end
 end
 end
-
-
-		KillSteal()
-	end
-
+KillSteal()
+end
 end
 
 function Combo(Target)
@@ -242,17 +274,9 @@ function CastR(Target)
 end
 
 
-function Reset()
-	if _G.MMA_Loaded and _G.MMA_NextAttackAvailability < 0.6 then
-		return true
-	elseif _G.AutoCarry and (_G.AutoCarry.shotFired or _G.AutoCarry.Orbwalker:IsAfterAttack()) then
-		return true
-	else
-		return false
-	end
-end
 function KillSteal()
 	local Enemies = GetEnemyHeroes()
+	local buffer = Config.Ultimate.UltBuff
 	for i, enemy in pairs(Enemies) do
 		if ValidTarget(enemy, 1800) and not enemy.dead and GetDistance(enemy) < 1800 then
 			if getDmg("Q", enemy, myHero) > enemy.health and  Config.KS.useQ then
@@ -263,13 +287,15 @@ function KillSteal()
 				CastE(enemy)
 			end
 
-			if getDmg("R", enemy, myHero) + 75 > enemy.health and  Config.KS.useR then
+			if getDmg("R", enemy, myHero) + buffer > enemy.health and  Config.KS.useR then
 				CastR(enemy)
 			end
 		end
 	end
 
 end
+
+
 function OnDraw()
 if Config.Draw.Drawkillable then  warning() end
 
@@ -289,18 +315,6 @@ function Check()
 	RReady = (myHero:CanUseSpell(_R) == READY)
 end
 
---Credit Xetrok
-function CountEnemyNearPerson(person,vrange)
-    count = 0
-    for i=1, heroManager.iCount do
-        currentEnemy = heroManager:GetHero(i)
-        if currentEnemy.team ~= myHero.team then
-            if GetDistance(currentEnemy, person) <= vrange and not currentEnemy.dead then count = count + 1 end
-        end
-    end
-    return count
-end
---End Credit Xetrok
 
 function farmQ()
 for _, minion in pairs(EnemyMinions.objects) do
@@ -312,6 +326,7 @@ end
 end
 end
 end
+
 
 function farm()
 for _, minion in pairs(EnemyMinions.objects) do
