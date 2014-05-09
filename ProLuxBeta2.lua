@@ -1,4 +1,4 @@
-local VERSION = '1.0'
+local VERSION = '1.1'
 
 if myHero.charName ~= "Lux" then return end
 
@@ -383,7 +383,7 @@ CastQ(Target)
 
 end
 
-if EReady and Config.ComboSub.Eusage then
+if EReady and not QReady and Config.ComboSub.Eusage then
 
 CastE(Target)
 
@@ -392,9 +392,10 @@ end
 
  if Config.ComboSub.attackspark and hasSpark() then
 
-                myHero:Attack(ts.target)
+myHero:Attack(ts.target)
 
-								end
+end
+
 if not QReady and not EReady then
 
 SOWi:EnableAttacks()
@@ -497,7 +498,7 @@ if QReady  and GetDistance(Target) < SpellQ.Range then
 		 if HitChance >= 2 then
 
 
-			Packet("S_CAST", {spellId = _Q, toX=CastPosition.x, toY=CastPosition.z, fromX=CastPosition.x, fromY=CastPosition.z}):send()
+			CastSpell(_Q,CastPosition.x,CastPosition.z)
 
 		end
 
@@ -518,7 +519,7 @@ if EReady  and GetDistance(Target) < SpellE.Range then
 		 SpellE.Delay,SpellE.Width,SpellE.Range,SpellE.Speed,false)
 
                 if HitChance >= 2 and GetDistance(CastPosition) < 850 then
-                     Packet("S_CAST", {spellId = _E, toX=CastPosition.x, toY=CastPosition.z, fromX=CastPosition.x, fromY=CastPosition.z}):send()
+                     CastSpell(_E,CastPosition.x,CastPosition.z)
 
                                             end
 
@@ -534,7 +535,7 @@ function CastR(Target)
 local CastPosition, HitChance, Pos = VP:GetLineCastPosition(Target, SpellR.Delay, SpellR.Width, SpellR.Range, SpellR.Speed, myHero, false)
 
                     if HitChance >= 2 and GetDistance(CastPosition) < SpellR.Range then
-					Packet("S_CAST", {spellId = _R, toX=CastPosition.x, toY=CastPosition.z, fromX=CastPosition.x, fromY=CastPosition.z}):send()
+					CastSpell(_R,CastPosition.x,CastPosition.z)
 
                     end
 
@@ -549,7 +550,7 @@ function CastRversion(Target)
 local CastPosition, HitChance, Pos = VP:GetLineCastPosition(Target, SpellR.Delay, SpellR.Width, SpellR.Range, SpellR.Speed, myHero, false)
                     if HitChance >= 2 and GetDistance(CastPosition) < SpellR.Range then
 
-					Packet("S_CAST", {spellId = _R, toX=CastPosition.x, toY=CastPosition.z, fromX=CastPosition.x, fromY=CastPosition.z}):send()
+					CastSpell(_R,CastPosition.x,CastPosition.z)
 
 										end
 
