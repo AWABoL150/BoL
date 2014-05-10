@@ -1,4 +1,4 @@
-local VERSION = "0.4"
+local VERSION = "0.6"
 
 if myHero.charName ~= "Zyra" then return end
 
@@ -576,7 +576,8 @@ if Config.ASub.useE then
             ['Tryndamere']  = {true, spell = 'Slash',             range = 650,   projSpeed = 1450, },
             ['XinZhao']     = {true, spell = _E,                  range = 650,   projSpeed = 2000, }, -- Targeted ability
         }
-        if unit.type == 'obj_AI_Hero' and unit.team == TEAM_ENEMY and isAGapcloserUnit[unit.charName] and GetDistance(unit) < 2000 and spell ~= nil then
+        if unit then 
+         unit.type == 'obj_AI_Hero' and unit.team == TEAM_ENEMY and isAGapcloserUnit[unit.charName] and GetDistance(unit) < 2000 and spell ~= nil then
             if spell.name == (type(isAGapcloserUnit[unit.charName].spell) == 'number' and unit:GetSpellData(isAGapcloserUnit[unit.charName].spell).name or isAGapcloserUnit[unit.charName].spell) then
                 if spell.target ~= nil and spell.target.name == myHero.name or isAGapcloserUnit[unit.charName].spell == 'blindmonkqtwo' then
                     ----print('Gapcloser: ',unit.charName, ' Target: ', (spell.target ~= nil and spell.target.name or 'NONE'), " ", spell.name, " ", spell.projectileID)
@@ -595,11 +596,13 @@ if Config.ASub.useE then
                         spellSpeed = isAGapcloserUnit[unit.charName].projSpeed
                     }
                 end
-            end
-        end
-    end
+            end 
+        end 
+    end 
+end 
 
-end
+
+        
 
 
 
