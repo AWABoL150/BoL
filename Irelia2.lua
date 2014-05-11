@@ -1,4 +1,4 @@
-_G.IreliaVersion = "0.1"
+_G.IreliaVersion = "0.2"
 _G.IreliaAUTOUPDATE = true
 _G.IreliaAuthor = "AWA"
 _G.IsLoaded = "Irelia"
