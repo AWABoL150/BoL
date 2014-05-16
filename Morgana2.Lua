@@ -1,4 +1,4 @@
-local VERSION = "0.7"
+local VERSION = "0.8"
 
 --Auto Download Required LIBS
 
@@ -53,7 +53,7 @@ local Config = nil
 
 local VP = VPrediction()
 
-local SpellQ = {Speed = 1200, Range = 1175, Delay = 0.5, Width = 70}
+local SpellQ = {Speed = 1200, Range = 1175, Delay = 0.2, Width = 50}
 
 local SpellW = {Range = 900, Delay = 0.5, Width = 280}
 
@@ -117,7 +117,7 @@ W = Spell(_W, SpellW.Range)
 R = Spell(_R, SpellR.Range)
 
 
-Q:SetSkillshot(VP, SKILLSHOT_LINEAR, SpellQ.Width,SpellQ.Delay, SpellQ.Speed, true)
+Q:SetSkillshot(VP, SKILLSHOT_LINEAR, SpellQ.Width , SpellQ.Delay, SpellQ.Speed, true)
 
 Loaded = true
 end
