@@ -99,45 +99,7 @@ local jungle = {
                                 Golem2 = {obj = nil, name = "AncientGolem7.1.1"},
                                 --LizardElder1 = {obj = nil, name = "LizardElder4.1.1"},
                                 --LizardElder2 = {obj = nil, name = "LizardElder10.1.1"},
-
 }
-
-local latestVersion=nil
-
-local updateCheck = false
-
-
-
-function getDownloadVersion(response)
-        latestVersion = response
-end
-
-
-
-function getVersion()
-        GetAsyncWebResult("dl.dropboxusercontent.com","/s/vbibv5530mivf6m/Luxversion.txt",getDownloadVersion)
-end
-
-
-
-
-function update()
-   if updateCheck == false then
-       local PATH = BOL_PATH.."Scripts\\ProLuxBeta2.lua"
-       local URL = "https://dl.dropboxusercontent.com/s/20eciohx5o0i3ky/ProLuxBeta2.lua"
-       if latestVersion~=nil and latestVersion ~= VERSION then
-           updateCheck = true
-           PrintChat("UPDATING Prolux - "..SCRIPT_PATH:gsub("/", "\\").."ProLuxBeta2.lua")
-           DownloadFile(URL, PATH,function ()
-            PrintChat("UPDATED - Please Reload (F9 twice)")
-            end)
-        elseif latestVersion == VERSION then
-            updateCheck = true
-            PrintChat("Prolux is up to date")
-        end
-   end
-end
-AddTickCallback(update)
 
 
 
@@ -235,8 +197,6 @@ function Getje()
 end
 
 function OnLoad()
-getVersion()
-
 Menu()
 
 Init()
