@@ -1,6 +1,6 @@
 if myHero.charName ~= "Corki" then return end
 
-local version = '0.4'
+local version = '0.5'
 
 --Auto Download Required LIBS
 local REQUIRED_LIBS = {
@@ -27,11 +27,19 @@ for DOWNLOAD_LIB_NAME, DOWNLOAD_LIB_URL in pairs(REQUIRED_LIBS) do
 		DownloadFile(DOWNLOAD_LIB_URL, LIB_PATH .. DOWNLOAD_LIB_NAME..".lua", AfterDownload)
 	end
 end
-
-
 if DOWNLOADING_LIBS then return end
-
 --End auto downloading LIBS
+
+--((Auto updater))--
+local AUTOUPDATE = true 
+local SCRIPT_HERO = tostring(myHero.charName)
+local SCRIPT_NAME ="AWA"..tostring(myHero.charName)
+--SourceUpdater(scriptName, version, host, updatePath, filePath, versionPath)
+if AUTOUPDATE then
+SourceUpdater(SCRIPT_NAME, version, "raw.github.com", "/AWABoL150/BoL/blob/master/"..SCRIPT_HERO.."2.lua", SCRIPT_PATH .. GetCurrentEnv().FILE_NAME, "/AWABoL150/BoL/blob/master/Versions/"..SCRIPT_HERO.."version"):CheckUpdate()
+end
+
+
 
 require 'VPrediction'
 require 'SourceLib'
