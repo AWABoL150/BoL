@@ -46,36 +46,6 @@ if DOWNLOADING_LIBS then return end
 
 --End auto downloading LIBS
 
-local latestVersion=nil
-
-local updateCheck = false
-
-
-function getDownloadVersion(response)
-        latestVersion = response
-end
-
-function getVersion()
-        GetAsyncWebResult("dl.dropboxusercontent.com","/s/niliki5rpp6qh9q/Quinn2.txt",getDownloadVersion)
-end
-
-function update()
-   if updateCheck == false then
-       local PATH = BOL_PATH.."Scripts\\Quinn2.lua"
-       local URL = "https://dl.dropboxusercontent.com/s/l8yd1nk9khvu45u/Quinn2.lua"
-       if latestVersion~=nil and latestVersion ~= VERSION then
-           updateCheck = true
-           PrintChat("UPDATING Quinn - "..SCRIPT_PATH:gsub("/", "\\").."Quinn2.lua")
-           DownloadFile(URL, PATH,function ()
-            PrintChat("UPDATED - Please Reload (F9 twice)")
-            end)
-        elseif latestVersion == VERSION then
-            updateCheck = true
-            PrintChat("Quinn is up to date")
-        end
-   end
-end
-AddTickCallback(update)
 
 
 
@@ -109,7 +79,6 @@ local informationTable = {}
 local spellExpired = true
 
 function OnLoad()
-getVersion()
 Init()
 ScriptSetUp()
 PrintChat("<font color=\"#81BEF7\">Awa Quinn loaded</font>")
