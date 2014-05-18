@@ -1,5 +1,7 @@
 if myHero.charName ~= "Corki" then return end
 
+local version = '0.4'
+
 --Auto Download Required LIBS
 local REQUIRED_LIBS = {
 		["VPrediction"] = "https://raw.github.com/honda7/BoL/master/Common/VPrediction.lua",
@@ -47,6 +49,8 @@ local SpellE = {Speed = 902, Range = 600, Delay = 0.5, Width = 100}
 
 local SpellR = {Range= 1225 ,Eidth = 40, Speed = 828, Delay= 	-0.5}
 
+local FullCobmo = {_Q,_E,_R,_AA,_R,_AA,_R}
+
 local Ranges = {[_Q]=850 , [_W]=800 , [_E] = 902 , [_R] = 1225}
 
 
@@ -61,6 +65,7 @@ end
 function Init()
 
 Q = Spell(_Q, SpellQ.Range)
+W = Spell(_W, SpellW.Range)
 E = Spell(_E, SpellE.Range)
 R = Spell(_R, SpellR.Range)
 
@@ -104,7 +109,7 @@ Config.ComboSub:addSubMenu("R options", "Rsub")
 Config.ComboSub.Qsub:addParam("useQ", "Use Q", SCRIPT_PARAM_ONOFF, true)
 Config.ComboSub.Qsub:addParam("Qhitchance", "Q Hitchance", SCRIPT_PARAM_SLICE, 2, 1, 3, 0)
 --W
-Config.ComboSub.Wsub:addParam("useW","useW on BurstMode(mousPos)")
+Config.ComboSub.Wsub:addParam("useW","useW on BurstMode(mousPos)",SCRIPT_PARAM_ONOFF,false)
 --E
 Config.ComboSub.Esub:addParam("useE", "use E", SCRIPT_PARAM_ONOFF, true)
 --R
@@ -112,31 +117,31 @@ Config.ComboSub.Rsub:addParam("useR", "use R", SCRIPT_PARAM_ONOFF, true)
 Config.ComboSub.Rsub:addParam("Rhitchance", "R Hitchance", SCRIPT_PARAM_SLICE, 2, 1, 2, 0)
 --Harass
 Config:addSubMenu("Harass options", "HarassSub")
-    Config.HarassSub:addSubMenu("Q options", "Qsub")
-	Config.HarassSub:addSubMenu("E options", "Esub")
-	Config.HarassSub:addSubMenu("R options", "Rsub")
+Config.HarassSub:addSubMenu("Q options", "Qsub")
+Config.HarassSub:addSubMenu("E options", "Esub")
+Config.HarassSub:addSubMenu("R options", "Rsub")
 
 --Spells Harass Options
 --Q
-   Config.HarassSub.Qsub:addParam("useQ", "Use Q", SCRIPT_PARAM_ONOFF, true)
+Config.HarassSub.Qsub:addParam("useQ", "Use Q", SCRIPT_PARAM_ONOFF, true)
 --E
-   Config.HarassSub.Esub:addParam("useE", "use E", SCRIPT_PARAM_ONOFF, true)
+Config.HarassSub.Esub:addParam("useE", "use E", SCRIPT_PARAM_ONOFF, true)
 --R
-	Config.HarassSub.Rsub:addParam("useR", "Use R", SCRIPT_PARAM_ONOFF, true)
+Config.HarassSub.Rsub:addParam("useR", "Use R", SCRIPT_PARAM_ONOFF, true)
 --KS
 Config:addSubMenu("KS", "KS")
 Config.KS:addParam("useQ", "Use Q", SCRIPT_PARAM_ONOFF, true)
 Config.KS:addParam("useE", "use E", SCRIPT_PARAM_ONOFF, true)
 Config.KS:addParam("useR", "Spam R", SCRIPT_PARAM_ONOFF, true)
 --Ultimate
-	Config:addSubMenu("Ultimate", "Ultimate")
-	Config.Ultimate:addParam("AimForme", "AutoAim your R ", SCRIPT_PARAM_ONKEYDOWN, false,string.byte('R'))
+Config:addSubMenu("Ultimate", "Ultimate")
+Config.Ultimate:addParam("AimForme", "AutoAim your R ", SCRIPT_PARAM_ONKEYDOWN, false,string.byte('R'))
 --Draw
 Config:addSubMenu("Draw", "Draw")
 for spell, range in pairs(Ranges) do
 		DrawHandler:CreateCircle(myHero, range, 1, {255, 255, 255, 255}):AddToMenu(Config.Draw, SpellToString(spell).." Range", true, true, true)
 	end
-DamageCalculator:AddToMenu(Config.Draw, FullCombo)
+DamageCalculator:AddToMenu(Config.Draw,FullCobmo)
 --Permashow
 Config:permaShow("Combo")
 Config:permaShow("Harass")
@@ -149,9 +154,9 @@ R:SetHitChance(Config.ComboSub.Rsub.Rhitchance)
 
 
 	local Qfound = TS:GetTarget(SpellQ.Range)
-    local Efound = TS:GetTarget(SpellE.Range)
-    local Rfound = TS:GetTarget(SpellR.Range)
-	local Wfound = TS:GetTarget(SpellW.Range)
+  local Efound = TS:GetTarget(SpellE.Range)
+  local Rfound = TS:GetTarget(SpellR.Range)
+	local Wfound = TS:GetTarget(1500)
 
 	Orbwalker:EnableAttacks()
 
@@ -174,7 +179,7 @@ if Rfound and R:IsReady() and Config.ComboSub.Rsub.useR then
 
 	end
 
-	if Wfound and W:IsReady() and Config.ComboSub.Wsub.useW and GetDistance(Wfound,mousePos) <= 20 and GetDistance(Wfound) < SpellW.Range then
+	if Wfound and W:IsReady() and Config.ComboSub.Wsub.useW and GetDistance(Wfound) >= SpellW.Range then
 
 		W:Cast(mousePos.x,mousePos.z)
 
