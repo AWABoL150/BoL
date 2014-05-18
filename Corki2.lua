@@ -1,23 +1,46 @@
 local VERSION = "0.3"
-
 if myHero.charName ~= "Corki" then return end
 
---Auto Download Required LIBS
+local UPDATE_SCRIPT_NAME = "Corki"
+local UPDATE_HOST = "raw.github.com"
+local UPDATE_PATH = "/AWABoL150/BoL/master/Corki2.lua"
+local UPDATE_FILE_PATH = SCRIPT_PATH..GetCurrentEnv().FILE_NAME
+local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
 
+local ServerData
+if autoupdateenabled then
+	GetAsyncWebResult(UPDATE_HOST, UPDATE_PATH.."?rand="..math.random(1,1000), function(d) ServerData = d end)
+	function update()
+		if ServerData ~= nil then
+			local ServerVersion
+			local send, tmp, sstart = nil, string.find(ServerData, "local version = \"")
+			if sstart then
+				send, tmp = string.find(ServerData, "\"", sstart+1)
+			end
+			if send then
+				ServerVersion = tonumber(string.sub(ServerData, sstart+1, send-1))
+			end
+
+			if ServerVersion ~= nil and tonumber(ServerVersion) ~= nil and tonumber(ServerVersion) > tonumber(version) then
+				DownloadFile(UPDATE_URL.."?rand="..math.random(1,1000), UPDATE_FILE_PATH, function () print("<font color=\"#FF0000\"><b>"..UPDATE_SCRIPT_NAME..":</b> successfully updated. Reload (double F9) Please. ("..version.." => "..ServerVersion..")</font>") end)     
+			elseif ServerVersion then
+				print("<font color=\"#FF0000\"><b>"..UPDATE_SCRIPT_NAME..":</b> You have got the latest version: <u><b>"..ServerVersion.."</b></u></font>")
+			end		
+			ServerData = nil
+		end
+	end
+	AddTickCallback(update)
+end
+
+--Auto Download Required LIBS
 local REQUIRED_LIBS = {
 		["VPrediction"] = "https://raw.github.com/honda7/BoL/master/Common/VPrediction.lua",
 		["SOW"] = "https://raw.github.com/honda7/BoL/master/Common/SOW.lua",
 		["SourceLib"] = "https://raw.github.com/TheRealSource/public/master/common/SourceLib.lua",
 
 	}
-
-
-
-local DOWNLOADING_LIBS, DOWNLOAD_COUNT = false, 0
+	local DOWNLOADING_LIBS, DOWNLOAD_COUNT = false, 0
 local SELF_NAME = GetCurrentEnv() and GetCurrentEnv().FILE_NAME or ""
-
-
-
 function AfterDownload()
 	DOWNLOAD_COUNT = DOWNLOAD_COUNT - 1
 	if DOWNLOAD_COUNT == 0 then
@@ -25,11 +48,6 @@ function AfterDownload()
 		print("<b>[Corki]: Required libraries downloaded successfully, please reload (double F9).</b>")
 	end
 end
-
-
-
-
-
 for DOWNLOAD_LIB_NAME, DOWNLOAD_LIB_URL in pairs(REQUIRED_LIBS) do
 	if FileExist(LIB_PATH .. DOWNLOAD_LIB_NAME .. ".lua") then
 		require(DOWNLOAD_LIB_NAME)
@@ -43,12 +61,7 @@ end
 
 if DOWNLOADING_LIBS then return end
 
-
 --End auto downloading LIBS
-
-
-
-
 
 require 'VPrediction'
 require 'SourceLib'
@@ -65,39 +78,6 @@ local SpellE = {Speed = 902, Range = 600, Delay = 0.5, Width = 100}
 local SpellR = {Range= 1225 ,Eidth = 40, Speed = 828, Delay= 	-0.5}
 
 
-
-
-local latestVersion=nil
-
-local updateCheck = false
-
-local attacked = false
-
-function getDownloadVersion(response)
-        latestVersion = response
-end
-
-function getVersion()
-        GetAsyncWebResult("dl.dropboxusercontent.com","/s/5i3d3olxddivya2/Corki2.txt",getDownloadVersion)
-end
-
-function update()
-   if updateCheck == false then
-       local PATH = BOL_PATH.."Scripts\\Corki2.lua"
-       local URL = "https://dl.dropboxusercontent.com/s/9xpbigmthyq02y6/Corki2.lua"
-       if latestVersion~=nil and latestVersion ~= VERSION then
-           updateCheck = true
-           PrintChat("UPDATING Corki - "..SCRIPT_PATH:gsub("/", "\\").."Corki2.lua")
-           DownloadFile(URL, PATH,function ()
-            PrintChat("UPDATED - Please Reload (F9 twice)")
-            end)
-        elseif latestVersion == VERSION then
-            updateCheck = true
-            PrintChat("Corki is up to date")
-        end
-   end
-end
-AddTickCallback(update)
 
 function OnLoad()
 getVersion()
@@ -125,99 +105,61 @@ Loaded = true
 end
 
 function ScriptSetUp()
-
 VP = VPrediction()
 TS = SimpleTS(STS_LESS_CAST_PHYSICAL)
 Orbwalker = SOW(VP)
-
-
-
-
-
-
-	Config = scriptConfig("Corki", "Corki")
-	Config:addParam("Combo", "Combo", SCRIPT_PARAM_ONKEYDOWN, false, 32)
-	Config:addParam("Harass", "Harass", SCRIPT_PARAM_ONKEYDOWN, false, string.byte('C'))
-
-
-	Config:addSubMenu("Orbwalk", "Orbwalk")
-    Orbwalker:LoadToMenu(Config.Orbwalk)
-
-
-  Config:addSubMenu("Combo options", "ComboSub")
-	Config.ComboSub:addSubMenu("Q options", "Qsub")
-	Config.ComboSub:addSubMenu("E options", "Esub")
-	Config.ComboSub:addSubMenu("R options", "Rsub")
-
-	--Spells Combo Options
-	--Q
-	Config.ComboSub.Qsub:addParam("useQ", "Use Q", SCRIPT_PARAM_ONOFF, true)
-	Config.ComboSub.Qsub:addParam("Qhitchance", "Q Hitchance", SCRIPT_PARAM_SLICE, 2, 1, 3, 0)
-
-
-	--E
-	Config.ComboSub.Esub:addParam("useE", "use E", SCRIPT_PARAM_ONOFF, true)
-
-
-
-	--R
-	Config.ComboSub.Rsub:addParam("useR", "use R", SCRIPT_PARAM_ONOFF, true)
-    Config.ComboSub.Rsub:addParam("Rhitchance", "R Hitchance", SCRIPT_PARAM_SLICE, 2, 1, 2, 0)
-
-
-  Config:addSubMenu("Harass options", "HarassSub")
+--((Menu))--
+Config = scriptConfig("Corki", "Corki")
+Config:addParam("Combo", "Combo", SCRIPT_PARAM_ONKEYDOWN, false, 32)
+Config:addParam("Harass", "Harass", SCRIPT_PARAM_ONKEYDOWN, false, string.byte('C'))
+---Orbwalker
+Config:addSubMenu("Orbwalk", "Orbwalk")
+Orbwalker:LoadToMenu(Config.Orbwalk)
+--Combo options
+Config:addSubMenu("Combo options", "ComboSub")
+Config.ComboSub:addSubMenu("Q options", "Qsub")
+Config.ComboSub:addSubMenu("E options", "Esub")
+Config.ComboSub:addSubMenu("R options", "Rsub")
+--Spells Combo Options
+--Q
+Config.ComboSub.Qsub:addParam("useQ", "Use Q", SCRIPT_PARAM_ONOFF, true)
+Config.ComboSub.Qsub:addParam("Qhitchance", "Q Hitchance", SCRIPT_PARAM_SLICE, 2, 1, 3, 0)
+--E
+Config.ComboSub.Esub:addParam("useE", "use E", SCRIPT_PARAM_ONOFF, true)
+--R
+Config.ComboSub.Rsub:addParam("useR", "use R", SCRIPT_PARAM_ONOFF, true)
+Config.ComboSub.Rsub:addParam("Rhitchance", "R Hitchance", SCRIPT_PARAM_SLICE, 2, 1, 2, 0)
+--Harass
+Config:addSubMenu("Harass options", "HarassSub")
     Config.HarassSub:addSubMenu("Q options", "Qsub")
 	Config.HarassSub:addSubMenu("E options", "Esub")
 	Config.HarassSub:addSubMenu("R options", "Rsub")
 
-      --Spells Harass Options
-
-
-   --Q
+--Spells Harass Options
+--Q
    Config.HarassSub.Qsub:addParam("useQ", "Use Q", SCRIPT_PARAM_ONOFF, true)
-
-    --E
+--E
    Config.HarassSub.Esub:addParam("useE", "use E", SCRIPT_PARAM_ONOFF, true)
-
-	--R
+--R
 	Config.HarassSub.Rsub:addParam("useR", "Use R", SCRIPT_PARAM_ONOFF, true)
-
-
-
-
-    --KS
-
-	Config:addSubMenu("KS", "KS")
-
-	Config.KS:addParam("useQ", "Use Q", SCRIPT_PARAM_ONOFF, true)
-
-	Config.KS:addParam("useE", "use E", SCRIPT_PARAM_ONOFF, true)
-
-	Config.KS:addParam("useR", "Spam R", SCRIPT_PARAM_ONOFF, true)
-
-
-    --Ultimate
+--KS
+Config:addSubMenu("KS", "KS")
+Config.KS:addParam("useQ", "Use Q", SCRIPT_PARAM_ONOFF, true)
+Config.KS:addParam("useE", "use E", SCRIPT_PARAM_ONOFF, true)
+Config.KS:addParam("useR", "Spam R", SCRIPT_PARAM_ONOFF, true)
+--Ultimate
 	Config:addSubMenu("Ultimate", "Ultimate")
 	Config.Ultimate:addParam("AimForme", "AutoAim your R ", SCRIPT_PARAM_ONKEYDOWN, false,string.byte('R'))
-
-
-
-    --Draw
-	Config:addSubMenu("Draw", "Draw")
-  Config.Draw:addParam("DrawQ", "Draw Q Range", SCRIPT_PARAM_ONOFF, true)
-
-	Config.Draw:addParam("DrawR", "Draw R Range", SCRIPT_PARAM_ONOFF, true)
-
-
-
+--Dra
+Config:addSubMenu("Draw", "Draw")
+Config.Draw:addParam("DrawQ", "Draw Q Range", SCRIPT_PARAM_ONOFF, true)
+Config.Draw:addParam("DrawR", "Draw R Range", SCRIPT_PARAM_ONOFF, true)
 --Permashow
 Config:permaShow("Combo")
 Config:permaShow("Harass")
+end
 
-
-		end
-
-		function Combo()
+function Combo()
 
 Q:SetHitChance(Config.ComboSub.Qsub.Qhitchance)
 R:SetHitChance(Config.ComboSub.Rsub.Rhitchance)
