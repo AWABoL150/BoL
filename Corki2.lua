@@ -251,17 +251,6 @@ if getDmg("E", enemy, myHero) > enemy.health and GetDistance(enemy) < SpellE.Ran
 
 
 
-function OnDraw()
-if Config.Draw.DrawQ then
-		DrawCircle3D(myHero.x, myHero.y, myHero.z, SpellQ.Range, 1,  ARGB(255, 0, 255, 255))
-	end
-
-	if Config.Draw.DrawR then
-		DrawCircle3D(myHero.x, myHero.y, myHero.z, SpellR.Range, 1,  ARGB(255, 0, 255, 255))
-	end
-
-end
-
 function OnTick()
 if Loaded then
 
