@@ -45,45 +45,6 @@ if DOWNLOADING_LIBS then return end
 
 --End auto lib downloader
 
-local latestVersion=nil
-
-local updateCheck = false
-
---Auto update
-
-function getDownloadVersion(response)
-        latestVersion = response
-end
-
-function getVersion()
-        GetAsyncWebResult("dl.dropboxusercontent.com","/s/f553ug0xxa6iwax/Zyra2.txt",getDownloadVersion)
-end
-
-function update()
-   if updateCheck == false then
-       local PATH = BOL_PATH.."Scripts\\Zyra2.lua"
-       local URL = "https://dl.dropboxusercontent.com/s/khj63nceprveqhr/Zyra2.lua"
-       if latestVersion~=nil and latestVersion ~= VERSION then
-           updateCheck = true
-           PrintChat("UPDATING Zyra - "..SCRIPT_PATH:gsub("/", "\\").."Zyra2.lua")
-           DownloadFile(URL, PATH,function ()
-            PrintChat("UPDATED - Please Reload (F9 twice)")
-            end)
-        elseif latestVersion == VERSION then
-            updateCheck = true
-            PrintChat("Zyra is up to date")
-        end
-   end
-end
-AddTickCallback(update)
-
---End auto update
-
-
-
-
-
-
 local FullCombo = {_Q, _E , _R , _Q , _IGNITE}
 
 require 'VPrediction'
@@ -115,7 +76,6 @@ local spellExpired = true
 
 
 function OnLoad()
-getVersion()
 Init()
 ScriptSetUp()
 PrintChat("<font color=\"#81BEF7\">Awa Zyra loaded</font>")
