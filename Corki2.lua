@@ -1,35 +1,36 @@
 if myHero.charName ~= "Corki" then return end
-local VERSION = "0.3"
-local autoupdateenabled = true 
-local UPDATE_SCRIPT_NAME = "Corki"
-local UPDATE_HOST = "raw.githubusercontent.com"
-local UPDATE_PATH = "/AWABoL150/BoL/master/Corki2.lua"
+local Version = "0.03"
+local Author = "AWA"
+local IsLoaded = "Corki"
+local AUTOUPDATE = true
+
+local UPDATE_FILE_PATH = SCRIPT_PATH..GetCurrentEnv().FILE_NAME
+local UPDATE_NAME = "Corki"
+local UPDATE_HOST = "raw.github.com"
+local UPDATE_PATH = "/AWABoL150/BoL/master/Corki2.lua"..math.random(1, 1000)
 local UPDATE_FILE_PATH = SCRIPT_PATH..GetCurrentEnv().FILE_NAME
 local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
 
-local ServerData
-if autoupdateenabled then
-	GetAsyncWebResult(UPDATE_HOST, UPDATE_PATH.."?rand="..math.random(1,1000), function(d) ServerData = d end)
-	function update()
-		if ServerData ~= nil then
-			local ServerVersion
-			local send, tmp, sstart = nil, string.find(ServerData, "local version = \"")
-			if sstart then
-				send, tmp = string.find(ServerData, "\"", sstart+1)
-			end
-			if send then
-				ServerVersion = tonumber(string.sub(ServerData, sstart+1, send-1))
-			end
-
-			if ServerVersion ~= nil and tonumber(ServerVersion) ~= nil and tonumber(ServerVersion) > tonumber(version) then
-				DownloadFile(UPDATE_URL.."?rand="..math.random(1,1000), UPDATE_FILE_PATH, function () print("<font color=\"#FF0000\"><b>"..UPDATE_SCRIPT_NAME..":</b> successfully updated. Reload (double F9) Please. ("..version.." => "..ServerVersion..")</font>") end)     
-			elseif ServerVersion then
-				print("<font color=\"#FF0000\"><b>"..UPDATE_SCRIPT_NAME..":</b> You have got the latest version: <u><b>"..ServerVersion.."</b></u></font>")
-			end		
-			ServerData = nil
-		end
-	end
-	AddTickCallback(update)
+function AutoupdaterMsg(msg) print("<font color=\"#FFFF73\">["..IsLoaded.."]:</font> <font color=\"#FFDFBF\">"..msg..".</font>") end
+if AUTOUPDATE then
+    local ServerData = GetWebResult(UPDATE_HOST, UPDATE_PATH)
+    if ServerData then
+        local ServerVersion = string.match(ServerData, "local Version = \"%d+.%d+\"")
+        ServerVersion = string.match(ServerVersion and ServerVersion or "", "%d+.%d+")
+        if ServerVersion then
+            ServerVersion = tonumber(ServerVersion)
+            if tonumber(Version) < ServerVersion then
+                AutoupdaterMsg("A new version is available: ["..ServerVersion.."]")
+                AutoupdaterMsg("The script is updating... please don't press [F9]!")
+                DelayAction(function() DownloadFile(UPDATE_URL, UPDATE_FILE_PATH, function ()
+AutoupdaterMsg("Successfully updated! ("..Version.." -> "..ServerVersion.."), Please reload (double [F9]) for the updated version!") end) end, 3)
+            else
+                AutoupdaterMsg("Your script is already the latest version: ["..ServerVersion.."]")
+            end
+        end
+    else
+        AutoupdaterMsg("Error downloading version info!")
+    end
 end
 
 --Auto Download Required LIBS
