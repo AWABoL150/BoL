@@ -65,43 +65,7 @@ local AA = {Range= 500}
 local Ranges = {RangeQ= 700 ,RangeW = 900, RangeR = 1000}
 
 
-
-local latestVersion=nil
-
-local updateCheck = false
-
-local attacked = false
-
-function getDownloadVersion(response)
-        latestVersion = response
-end
-
-function getVersion()
-        GetAsyncWebResult("dl.dropboxusercontent.com","/s/0s854y5218naeqt/Graves2.txt",getDownloadVersion)
-end
-
-function update()
-   if updateCheck == false then
-       local PATH = BOL_PATH.."Scripts\\Graves2.lua"
-       local URL = "https://dl.dropboxusercontent.com/s/65j0kmy1b3uzbqb/Graves2.lua"
-       if latestVersion~=nil and latestVersion ~= VERSION then
-           updateCheck = true
-           PrintChat("UPDATING Graves - "..SCRIPT_PATH:gsub("/", "\\").."Graves2.lua")
-           DownloadFile(URL, PATH,function ()
-            PrintChat("UPDATED - Please Reload (F9 twice)")
-            end)
-        elseif latestVersion == VERSION then
-            updateCheck = true
-            PrintChat("Graves is up to date")
-        end
-   end
-end
-AddTickCallback(update)
-
-
-
 function OnLoad()
-getVersion()
 Init()
 ScriptSetUp()
 PrintChat("<font color=\"#81BEF7\">Awa Graves loaded</font>")
