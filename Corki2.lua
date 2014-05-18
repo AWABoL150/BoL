@@ -1,4 +1,4 @@
-if myHero.charName ~= "Corki" then return end
+http://privatepaste.com/fecae4a2e2if myHero.charName ~= "Corki" then return end
 local VERSION = "0.3"
 
 
@@ -81,7 +81,6 @@ local SpellR = {Range= 1225 ,Eidth = 40, Speed = 828, Delay= 	-0.5}
 
 
 function OnLoad()
-getVersion()
 Init()
 ScriptSetUp()
 PrintChat("<font color=\"#81BEF7\">Awa Corki loaded</font>")
