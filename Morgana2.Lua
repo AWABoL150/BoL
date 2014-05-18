@@ -59,50 +59,10 @@ local SpellW = {Range = 900, Delay = 0.5, Width = 280}
 
 local SpellR = {Range= 625 , Speed = 20, Delay= 0.3}
 
-local latestVersion=nil
-
-local updateCheck = false
-
-local attacked = false
-
 local informationTable = {}
 local spellExpired = true
 
-
-
---Auto update
-
-function getDownloadVersion(response)
-        latestVersion = response
-end
-
-function getVersion()
-        GetAsyncWebResult("dl.dropboxusercontent.com","/s/mi80iugh8yn0iii/Morgana2.txt",getDownloadVersion)
-end
-
-function update()
-   if updateCheck == false then
-       local PATH = BOL_PATH.."Scripts\\Morgana2.lua"
-       local URL = "https://dl.dropboxusercontent.com/s/cfjgy7nn3crx3no/Morgana2.lua"
-       if latestVersion~=nil and latestVersion ~= VERSION then
-           updateCheck = true
-           PrintChat("UPDATING Morgana - "..SCRIPT_PATH:gsub("/", "\\").."Morgana2.lua")
-           DownloadFile(URL, PATH,function ()
-            PrintChat("UPDATED - Please Reload (F9 twice)")
-            end)
-        elseif latestVersion == VERSION then
-            updateCheck = true
-            PrintChat("Morgana is up to date")
-        end
-   end
-end
-AddTickCallback(update)
-
-
-
-
 function OnLoad()
-getVersion()
 Init()
 ScriptSetUp()
 PrintChat("<font color=\"#81BEF7\">Awa Morgana loaded</font>")
