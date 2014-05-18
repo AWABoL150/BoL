@@ -1,6 +1,6 @@
 if myHero.charName ~= "Corki" then return end
 
-local version = '0.5'
+local version = "0.5"
 
 --Auto Download Required LIBS
 local REQUIRED_LIBS = {
@@ -31,12 +31,13 @@ if DOWNLOADING_LIBS then return end
 --End auto downloading LIBS
 
 --((Auto updater))--
-local AUTOUPDATE = true 
+local AUTOUPDATE = false
 local SCRIPT_HERO = tostring(myHero.charName)
 local SCRIPT_NAME ="AWA"..tostring(myHero.charName)
+local UPDATE_FILE_PATH = SCRIPT_PATH..GetCurrentEnv().FILE_NAME
 --SourceUpdater(scriptName, version, host, updatePath, filePath, versionPath)
 if AUTOUPDATE then
-SourceUpdater(SCRIPT_NAME, version, "raw.github.com", "/AWABoL150/BoL/blob/master/"..SCRIPT_HERO.."2.lua", SCRIPT_PATH .. GetCurrentEnv().FILE_NAME, "/AWABoL150/BoL/blob/master/Versions/"..SCRIPT_HERO.."version"):CheckUpdate()
+SourceUpdater(SCRIPT_NAME, version, "raw.github.com", "/AWABoL150/BoL/blob/master/"..SCRIPT_HERO.."2.lua", UPDATE_FILE_PATH,0.5):CheckUpdate()
 end
 
 
