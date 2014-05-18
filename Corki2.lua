@@ -1,4 +1,4 @@
-local VERSION = "0.3"
+local VERSION = "0.4"
 if myHero.charName ~= "Corki" then return end
 
 local UPDATE_SCRIPT_NAME = "Corki"
