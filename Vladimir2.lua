@@ -94,37 +94,6 @@ local VP=VPrediction()
 --Level sequence
 local levelSequence = { 1,2,1,3,1,4,1,3,1,3,4,3,3,2,2,4,2,2 }
 local latestVersion=nil
---Updater Stuff
-local updateCheck = false
-local attacked = false
-
-function getDownloadVersion(response)
-        latestVersion = response
-end
-
-function getVersion()
-        GetAsyncWebResult("dl.dropboxusercontent.com","/s/zcwgv2evby6ssbh/Vladversion.txt",getDownloadVersion)
-end
-
-function update()
-   if updateCheck == false then
-       local PATH = BOL_PATH.."Scripts\\Vladimir2.lua"
-       local URL = "https://dl.dropboxusercontent.com/s/c7bkmus63dnquhn/Vladimir2.lua"
-       if latestVersion~=nil and latestVersion ~= VERSION then
-           updateCheck = true
-           PrintChat("UPDATING Vladmir the bloodbender - "..SCRIPT_PATH:gsub("/", "\\").."Vladimir2.lua")
-           DownloadFile(URL, PATH,function ()
-            PrintChat("UPDATED - Please Reload (F9 twice)")
-            end)
-        elseif latestVersion == VERSION then
-            updateCheck = true
-            PrintChat("Vladmir the bloodbender is up to date")
-        end
-   end
-end
-AddTickCallback(update)
-
-
 
 
 function Menu()
@@ -217,8 +186,6 @@ Config:permaShow("Farm")
 end
 
 function OnLoad()
-
-getVersion()
 
 Menu()
 
