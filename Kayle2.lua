@@ -49,36 +49,6 @@ if DOWNLOADING_LIBS then return end
 
 --End auto lib downloader
 
-
-
---Auto update
-
-function getDownloadVersion(response)
-        latestVersion = response
-end
-
-function getVersion()
-        GetAsyncWebResult("dl.dropboxusercontent.com","/s/6oikm3fcp1lhitl/Kayle2.txt",getDownloadVersion)
-end
-
-function update()
-   if updateCheck == false then
-       local PATH = BOL_PATH.."Scripts\\Kayle2.lua"
-       local URL = "https://dl.dropboxusercontent.com/s/eran6o9mj2sf8d8/Kayle2.lua"
-       if latestVersion~=nil and latestVersion ~= VERSION then
-           updateCheck = true
-           PrintChat("UPDATING Kayle - "..SCRIPT_PATH:gsub("/", "\\").."Kayle2.lua")
-           DownloadFile(URL, PATH,function ()
-            PrintChat("UPDATED - Please Reload (F9 twice)")
-            end)
-        elseif latestVersion == VERSION then
-            updateCheck = true
-            PrintChat("Kayle is up to date")
-        end
-   end
-end
-AddTickCallback(update)
---end Autoupdate
  require "SOW"
  require "SourceLib"
  require "VPrediction" 
