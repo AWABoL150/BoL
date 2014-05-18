@@ -53,7 +53,7 @@ if DOWNLOADING_LIBS then return end
 --REQUIRED LIBS
 
 
-  require "VPrediction"
+    require "VPrediction"
     require "SOW"
     require "SourceLib"
 
@@ -80,9 +80,6 @@ local Speeds = {[_E]=20,[_R]=1200}
 local SpellE = {Speed = 20, Range =400, Delay = 0.5, Width = 330}
 
 
-
-
-
 local informationTable = {}
 
 local spellExpired = true
@@ -91,51 +88,10 @@ local levelSequence = {3,2,1,3,3,4,3,1,3,1,4,1,1,2,2,4,2,2 }
 
 local Ename2=myHero:GetSpellData(_E).name
 
---AUTO UPDATER
-function getDownloadVersion(response)
-        latestVersion = response
-end
-
-
-
-
-
-
-function getVersion()
-        GetAsyncWebResult("dl.dropboxusercontent.com","/s/fx5bl9pvv4c41m4/Fizzversion.txt",getDownloadVersion)
-end
-
-
-
-
-
-function update()
-   if updateCheck == false then
-       local PATH = BOL_PATH.."Scripts\\Fizz2.lua"
-       local URL = "https://dl.dropboxusercontent.com/s/i2p29ovbj2kj31g/Fizz2.lua"
-       if latestVersion~=nil and latestVersion ~= VERSION then
-           updateCheck = true
-           PrintChat("UPDATING Fizz The fisherman - "..SCRIPT_PATH:gsub("/", "\\").."Fizz2.lua")
-           DownloadFile(URL, PATH,function ()
-            PrintChat("UPDATED - Please Reload (F9 twice)")
-            end)
-        elseif latestVersion == VERSION then
-            updateCheck = true
-            PrintChat("Fizz the fisherman is up to date")
-        end
-   end
-end
-AddTickCallback(update)
-
-
-
-
---END AUTO UPDATER
 
 function OnLoad()
 
-    getVersion()
-
+  
   VP = VPrediction()
 
     SOWi = SOW(VP)
