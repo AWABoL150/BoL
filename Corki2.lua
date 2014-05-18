@@ -1,37 +1,4 @@
 if myHero.charName ~= "Corki" then return end
-local Version = "0.03"
-local Author = "AWA"
-local IsLoaded = "Corki"
-local AUTOUPDATE = true
-
-local UPDATE_FILE_PATH = SCRIPT_PATH..GetCurrentEnv().FILE_NAME
-local UPDATE_NAME = "Corki"
-local UPDATE_HOST = "raw.github.com"
-local UPDATE_PATH = "/AWABoL150/BoL/master/Corki2.lua"..math.random(1, 1000)
-local UPDATE_FILE_PATH = SCRIPT_PATH..GetCurrentEnv().FILE_NAME
-local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
-
-function AutoupdaterMsg(msg) print("<font color=\"#FFFF73\">["..IsLoaded.."]:</font> <font color=\"#FFDFBF\">"..msg..".</font>") end
-if AUTOUPDATE then
-    local ServerData = GetWebResult(UPDATE_HOST, UPDATE_PATH)
-    if ServerData then
-        local ServerVersion = string.match(ServerData, "local Version = \"%d+.%d+\"")
-        ServerVersion = string.match(ServerVersion and ServerVersion or "", "%d+.%d+")
-        if ServerVersion then
-            ServerVersion = tonumber(ServerVersion)
-            if tonumber(Version) < ServerVersion then
-                AutoupdaterMsg("A new version is available: ["..ServerVersion.."]")
-                AutoupdaterMsg("The script is updating... please don't press [F9]!")
-                DelayAction(function() DownloadFile(UPDATE_URL, UPDATE_FILE_PATH, function ()
-AutoupdaterMsg("Successfully updated! ("..Version.." -> "..ServerVersion.."), Please reload (double [F9]) for the updated version!") end) end, 3)
-            else
-                AutoupdaterMsg("Your script is already the latest version: ["..ServerVersion.."]")
-            end
-        end
-    else
-        AutoupdaterMsg("Error downloading version info!")
-    end
-end
 
 --Auto Download Required LIBS
 local REQUIRED_LIBS = {
@@ -74,9 +41,13 @@ local VP = VPrediction()
 
 local SpellQ = {Speed = 850, Range = 825, Delay = 0.5, Width = 250}
 
+local SpellW = {Range = 800}
+
 local SpellE = {Speed = 902, Range = 600, Delay = 0.5, Width = 100}
 
 local SpellR = {Range= 1225 ,Eidth = 40, Speed = 828, Delay= 	-0.5}
+
+local Ranges = {[_Q]=850 , [_W]=800 , [_E] = 902 , [_R] = 1225}
 
 
 
@@ -108,6 +79,13 @@ function ScriptSetUp()
 VP = VPrediction()
 TS = SimpleTS(STS_LESS_CAST_PHYSICAL)
 Orbwalker = SOW(VP)
+DrawHandler = DrawManager()
+DamageCalculator= DamageLib()
+--((Damage Calculator))
+DamageCalculator:RegisterDamageSource(_Q, _MAGIC,30, 50, _PHYSICAL, _AD, 0.5, function() return (player:CanUseSpell(_Q) == READY) end)
+DamageCalculator:RegisterDamageSource(_E, _PHYSICAL, 32, 48, _PHYSICAL, _AD, 1.4, function() return (player:CanUseSpell(_E) == READY) end)
+DamageCalculator:RegisterDamageSource(_R, _MAGIC, 20, 80, _PHYSICAL, _AD, 0.6, function() return (player:CanUseSpell(_R) == READY) end)
+
 --((Menu))--
 Config = scriptConfig("Corki", "Corki")
 Config:addParam("Combo", "Combo", SCRIPT_PARAM_ONKEYDOWN, false, 32)
@@ -118,12 +96,15 @@ Orbwalker:LoadToMenu(Config.Orbwalk)
 --Combo options
 Config:addSubMenu("Combo options", "ComboSub")
 Config.ComboSub:addSubMenu("Q options", "Qsub")
+Config.ComboSub:addSubMenu("W options", "Wsub")
 Config.ComboSub:addSubMenu("E options", "Esub")
 Config.ComboSub:addSubMenu("R options", "Rsub")
 --Spells Combo Options
 --Q
 Config.ComboSub.Qsub:addParam("useQ", "Use Q", SCRIPT_PARAM_ONOFF, true)
 Config.ComboSub.Qsub:addParam("Qhitchance", "Q Hitchance", SCRIPT_PARAM_SLICE, 2, 1, 3, 0)
+--W
+Config.ComboSub.Wsub:addParam("useW","useW on BurstMode(mousPos)")
 --E
 Config.ComboSub.Esub:addParam("useE", "use E", SCRIPT_PARAM_ONOFF, true)
 --R
@@ -150,10 +131,12 @@ Config.KS:addParam("useR", "Spam R", SCRIPT_PARAM_ONOFF, true)
 --Ultimate
 	Config:addSubMenu("Ultimate", "Ultimate")
 	Config.Ultimate:addParam("AimForme", "AutoAim your R ", SCRIPT_PARAM_ONKEYDOWN, false,string.byte('R'))
---Dra
+--Draw
 Config:addSubMenu("Draw", "Draw")
-Config.Draw:addParam("DrawQ", "Draw Q Range", SCRIPT_PARAM_ONOFF, true)
-Config.Draw:addParam("DrawR", "Draw R Range", SCRIPT_PARAM_ONOFF, true)
+for spell, range in pairs(Ranges) do
+		DrawHandler:CreateCircle(myHero, range, 1, {255, 255, 255, 255}):AddToMenu(Config.Draw, SpellToString(spell).." Range", true, true, true)
+	end
+DamageCalculator:AddToMenu(Config.Draw, FullCombo)
 --Permashow
 Config:permaShow("Combo")
 Config:permaShow("Harass")
@@ -166,12 +149,9 @@ R:SetHitChance(Config.ComboSub.Rsub.Rhitchance)
 
 
 	local Qfound = TS:GetTarget(SpellQ.Range)
-
-
-	local Efound = TS:GetTarget(SpellE.Range)
-
-
-	local Rfound = TS:GetTarget(SpellR.Range)
+    local Efound = TS:GetTarget(SpellE.Range)
+    local Rfound = TS:GetTarget(SpellR.Range)
+	local Wfound = TS:GetTarget(SpellW.Range)
 
 	Orbwalker:EnableAttacks()
 
@@ -193,6 +173,12 @@ if Rfound and R:IsReady() and Config.ComboSub.Rsub.useR then
    R:Cast(Qfound)
 
 	end
+
+	if Wfound and W:IsReady() and Config.ComboSub.Wsub.useW and GetDistance(Wfound,mousePos) <= 20 and GetDistance(Wfound) < SpellW.Range then
+
+		W:Cast(mousePos.x,mousePos.z)
+
+	end 
 
  end
 
@@ -280,4 +266,5 @@ end
 end
 
 end
+
 
