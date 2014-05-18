@@ -1,7 +1,6 @@
-http://privatepaste.com/fecae4a2e2if myHero.charName ~= "Corki" then return end
-local VERSION = "0.3"
-
-
+if myHero.charName ~= "Corki" then return end
+local VERSION = "0.4"
+local autoupdateenabled = true 
 local UPDATE_SCRIPT_NAME = "Corki"
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/AWABoL150/BoL/master/Corki2.lua"
