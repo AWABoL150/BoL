@@ -22,57 +22,11 @@ local WRange, RRange = nil, nil
 
 local QReady, WReady, EReady, RReady = nil, nil, nil, nil
 
-local latestVersion=nil
-
-local updateCheck = false
-
-local attacked = false
-
-
-
-function getDownloadVersion(response)
-   latestVersion = response
-				
-				
-end
-
-
-
-
-function getVersion()
-
-        GetAsyncWebResult("dl.dropboxusercontent.com","/s/d57o291hjpflrs1/Ezversion.txt",getDownloadVersion)
-end
-
-
-function update()
-
-   if updateCheck == false then
-       local PATH = BOL_PATH.."Scripts\\Ezreal2.lua"
-       local URL = "https://dl.dropboxusercontent.com/s/1n0nkzyg8jmhlgk/Ezreal2.lua"
-       if latestVersion~=nil and latestVersion ~= VERSION then
-           updateCheck = true
-           PrintChat("UPDATING Ezreal - "..SCRIPT_PATH:gsub("/", "\\").."Ezreal2.lua")
-           DownloadFile(URL, PATH,function ()
-            PrintChat("UPDATED - Please Reload (F9 twice)")
-            end)
-        elseif latestVersion == VERSION then
-            updateCheck = true
-            PrintChat("Ezreal is up to date")
-        end
-   end
-end
-AddTickCallback(update)
-
-
-
-
-
 function OnLoad()
-getVersion()
+
 Menu()
 Init()
-	PrintChat("<font color=\"#81BEF7\">Awa Ezreal loaded</font>")
+PrintChat("<font color=\"#81BEF7\">Awa Ezreal loaded</font>")
 end
 
 function Init()
