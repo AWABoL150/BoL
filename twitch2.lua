@@ -46,39 +46,6 @@ if DOWNLOADING_LIBS then return end
 
 --End auto downloading LIBS
 
-local latestVersion=nil
-
-local updateCheck = false
-
-
-function getDownloadVersion(response)
-        latestVersion = response
-end
-
-function getVersion()
-        GetAsyncWebResult("dl.dropboxusercontent.com","/s/7e00ms5rnci3s6h/Twitch2.txt",getDownloadVersion)
-end
-
-function update()
-   if updateCheck == false then
-       local PATH = BOL_PATH.."Scripts\\Twitch2.lua"
-       local URL = "https://dl.dropboxusercontent.com/s/2h072f1x7aqolyc/Twitch2.lua"
-       if latestVersion~=nil and latestVersion ~= VERSION then
-           updateCheck = true
-           PrintChat("UPDATING Twitch - "..SCRIPT_PATH:gsub("/", "\\").."Twitch2.lua")
-           DownloadFile(URL, PATH,function ()
-            PrintChat("UPDATED - Please Reload (F9 twice)")
-            end)
-        elseif latestVersion == VERSION then
-            updateCheck = true
-            PrintChat("Twitch is up to date")
-        end
-   end
-end
-AddTickCallback(update)
-
-
-
 
 local FullCombo = {ItemManager:GetItem("BOTRK"):GetId(),_AA, _AA, _AA, _AA, _AA, _AA, _E ,_IGNITE}
 
@@ -102,7 +69,6 @@ local AA = {Range= 550}
 local Ranges = { [_W] = 902, [_E] = 900}
 
 function OnLoad()
-getVersion()
 Init()
 ScriptSetUp()
 PrintChat("<font color=\"#81BEF7\">Awa Twitch loaded</font>")
