@@ -47,19 +47,6 @@ if DOWNLOADING_LIBS then return end
 
 --END AUTO LIBS DOWNLOADER
 
-
-
-
---REQUIRED LIBS
-
-
-    require "VPrediction"
-    require "SOW"
-    require "SourceLib"
-
-
---END REQUIRED LIBS
-
 --GLOBALS
 
 
