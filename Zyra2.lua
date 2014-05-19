@@ -47,11 +47,6 @@ if DOWNLOADING_LIBS then return end
 
 local FullCombo = {_Q, _E , _R , _Q , _IGNITE}
 
-require 'VPrediction'
-require 'SourceLib'
-require 'SOW'
-
-
 local Config = nil
 
 local VP = VPrediction()
