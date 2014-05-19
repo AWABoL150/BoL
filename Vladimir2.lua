@@ -46,14 +46,6 @@ if DOWNLOADING_LIBS then return end
 
 --End auto downloading LIBS
 
---Required Libs
-
-
-require "VPrediction"
-
-require "SOW"
-
-require "SourceLib"
 
 --[[Globals]]
 
