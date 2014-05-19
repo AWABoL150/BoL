@@ -46,10 +46,6 @@ if DOWNLOADING_LIBS then return end
 
 --End auto downloading LIBS
 
-require 'VPrediction'
-require 'SourceLib'
-require 'SOW'
-
 local Config = nil
 
 local VP = VPrediction()
