@@ -46,15 +46,7 @@ if DOWNLOADING_LIBS then return end
 
 --End auto downloading LIBS
 
-
-
-
 local FullCombo = {_AA, _Q, _E, _AA, _AA, _Q, _R ,_IGNITE}
-
-
-require 'VPrediction'
-require 'SourceLib'
-require 'SOW'
 
 local Config = nil
 
