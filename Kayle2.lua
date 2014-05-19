@@ -49,12 +49,8 @@ if DOWNLOADING_LIBS then return end
 
 --End auto lib downloader
 
- require "SOW"
- require "SourceLib"
- require "VPrediction" 
-
-
 local Config = nil
+
 local VP = VPrediction()
 
 local FullCombo = {_Q,_E,_AA,_AA,_Q ,_IGNITE}
