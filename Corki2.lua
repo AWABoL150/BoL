@@ -41,11 +41,6 @@ SourceUpdater(SCRIPT_NAME, version, "raw.github.com", "/AWABoL150/BoL/blob/maste
 end
 
 
-
-require 'VPrediction'
-require 'SourceLib'
-require 'SOW'
-
 local Config = nil
 
 local VP = VPrediction()
