@@ -45,10 +45,6 @@ if DOWNLOADING_LIBS then return end
 
 if myHero.charName ~= "Morgana" then return end
 
-require 'VPrediction'
-require 'SourceLib'
-require 'SOW'
-
 local Config = nil
 
 local VP = VPrediction()
