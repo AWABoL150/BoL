@@ -43,8 +43,6 @@ end
 
 if DOWNLOADING_LIBS then return end
 
---Required Libs
-
 --[[Globals]]
 --SpellData
 local SpellQ = {Speed = 1200, Range = 1300, Delay = 0.5, Width = 80 , Radius=210}
