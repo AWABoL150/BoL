@@ -49,11 +49,6 @@ if DOWNLOADING_LIBS then return end
 
 local FullCombo = {ItemManager:GetItem("BOTRK"):GetId(),_AA, _AA, _AA, _AA, _AA, _AA, _E ,_IGNITE}
 
-
-require 'VPrediction'
-require 'SourceLib'
-require 'SOW'
-
 local Config = nil
 
 local VP = VPrediction()
