@@ -114,7 +114,7 @@ end
 if DOWNLOADING_SOURCELIB then print("Downloading required libraries, please wait...") return end
 
 if AUTOUPDATE then
-  SourceUpdater(SCRIPT_NAME, version, "http://bitbucket.org", "/christiantluciani/BoL/raw/master/"..SCRIPT_NAME..".lua", SCRIPT_PATH .. GetCurrentEnv().FILE_NAME, "/christiantluciani/BoL/raw/master/VersionFiles/"..SCRIPT_NAME..".version"):CheckUpdate()
+ 	SourceUpdater(SCRIPT_NAME, version, "raw.github.com", "/AWABoL150/BoL/tree/master/"..SCRIPT_NAME..".lua", SCRIPT_PATH .. GetCurrentEnv().FILE_NAME, "/AWABoL150/BoL/blob/master/Versions/"..SCRIPT_NAME..".version"):CheckUpdate()
 end
 
 local RequireI = Require("SourceLib")
