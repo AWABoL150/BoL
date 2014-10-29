@@ -11,12 +11,8 @@ local REQUIRED_LIBS = {
 
 	}
 
-
-
 local DOWNLOADING_LIBS, DOWNLOAD_COUNT = false, 0
 local SELF_NAME = GetCurrentEnv() and GetCurrentEnv().FILE_NAME or ""
-
-
 
 function AfterDownload()
 	DOWNLOAD_COUNT = DOWNLOAD_COUNT - 1
@@ -25,10 +21,6 @@ function AfterDownload()
 		print("<b>[Quinn]: Required libraries downloaded successfully, please reload (double F9).</b>")
 	end
 end
-
-
-
-
 
 for DOWNLOAD_LIB_NAME, DOWNLOAD_LIB_URL in pairs(REQUIRED_LIBS) do
 	if FileExist(LIB_PATH .. DOWNLOAD_LIB_NAME .. ".lua") then
@@ -39,17 +31,11 @@ for DOWNLOAD_LIB_NAME, DOWNLOAD_LIB_URL in pairs(REQUIRED_LIBS) do
 		DownloadFile(DOWNLOAD_LIB_URL, LIB_PATH .. DOWNLOAD_LIB_NAME..".lua", AfterDownload)
 	end
 end
-
-
 if DOWNLOADING_LIBS then return end
 
 
---End auto downloading LIBS
-
 local latestVersion=nil
-
 local updateCheck = false
-
 
 function getDownloadVersion(response)
         latestVersion = response
@@ -77,42 +63,31 @@ function update()
 end
 AddTickCallback(update)
 
-
-
 local FullCombo = {_AA, _Q, _E, _AA, _AA, _Q, _R ,_IGNITE}
-
-
-require 'VPrediction'
-require 'SourceLib'
-require 'SOW'
 
 local Config = nil
 
 local VP = VPrediction()
+
 local SpellQ = {Speed = 1200, Range =1025 , Delay = 0.5, Width = 80}
-
 local SpellW = {Range =2000}
-
 local SpellE = {Range = 725}
-
 local SpellR = {Range = 700}
 
 local SpellValorQ = {Range =125}
-
 local Form=false
 
 local AA = {Range= 550}
-
 local Ranges = {[_Q] = 902, [_W] = 2000 ,[_E] = 725 ,[_R] =700}
-
 local informationTable = {}
 local spellExpired = true
 
 function OnLoad()
-getVersion()
-Init()
-ScriptSetUp()
-PrintChat("<font color=\"#81BEF7\">Awa Quinn loaded</font>")
+	getVersion()
+	Init()
+	ScriptSetUp()
+
+	PrintChat("<font color=\"#81BEF7\">Awa Quinn loaded</font>")
 end
 
 
@@ -124,7 +99,6 @@ W = Spell(_W, SpellW.Range)
 E = Spell(_E, SpellE.Range)
 R = Spell(_R, SpellR.Range)
 
---Q skillshot
 Q:SetSkillshot(VP, SKILLSHOT_LINEAR, SpellQ.Width, SpellQ.Delay, SpellQ.Speed, true)
 
 --Minion manager for incoming farming
@@ -172,95 +146,71 @@ Config:addSubMenu("KS", "KS")
 Config.KS:addParam("useQ", "Use Q", SCRIPT_PARAM_ONOFF, true)
 --Draw
 Config:addSubMenu("Draw", "Draw")
-for spell, range in pairs(Ranges) do
-		DrawHandler:CreateCircle(myHero, range, 1, {255, 255, 255, 255}):AddToMenu(Config.Draw, SpellToString
-
-(spell).." Range", true, true, true)
+	for spell, range in pairs(Ranges) do
+		DrawHandler:CreateCircle(myHero, range, 1, {255, 255, 255, 255}):AddToMenu(Config.Draw, SpellToString(spell).." Range", true, true, true)
 	end
-	
-
-
-
 --Permashow
 Config:permaShow("Combo")
 end
 
 
 function Combo()
---Q hitchance
-Q:SetHitChance(Config.ComboSub.HumanSub.Qsub.Qhitchance)
+	Q:SetHitChance(Config.ComboSub.HumanSub.Qsub.Qhitchance)
+	
+	if not Form then 
+		--Targets 
+		local Qfound = TS:GetTarget(SpellQ.Range)
+		local Efound = TS:GetTarget(SpellE.Range)
+		local Rfound = TS:GetTarget(SpellR.Range)
+		--Q 
+		if Qfound and Q:IsReady() and Config.ComboSub.HumanSub.Qsub.useQ then 
+			Q:Cast(Qfound)
+		end 
 
-if not Form then 
---Targets 
-local Qfound = TS:GetTarget(SpellQ.Range)
-local Efound = TS:GetTarget(SpellE.Range)
-local Rfound = TS:GetTarget(SpellR.Range)
---Q 
-if Qfound and Q:IsReady() and Config.ComboSub.HumanSub.Qsub.useQ then 
+		--E 
+		if Efound and E:IsReady() and Config.ComboSub.HumanSub.Esub.useE then 
+			E:Cast(Efound)
+		end 
+	end 
 
-	Q:Cast(Qfound)
+	if Form then 
+		local QfoundValor = TS:GetTarget(SpellValorQ.Range)
+		local Efound = TS:GetTarget(SpellE.Range)
+		local Rfound = TS:GetTarget(SpellR.Range)
 
-end 
---E 
-if Efound and E:IsReady() and Config.ComboSub.HumanSub.Esub.useE then 
+		if Efound and E:IsReady() and Config.ComboSub.ValorSub.Esub.useE then 
+			E:Cast(Efound)
+		end 
 
-	E:Cast(Efound)
+		if QfoundValor and Q:IsReady() and Config.ComboSub.ValorSub.Qsub.useQ then 
+			Q:Cast(QfoundValor)
+		end 
 
-end 
-end 
-
-if Form then 
-local QfoundValor = TS:GetTarget(SpellValorQ.Range)
-local Efound = TS:GetTarget(SpellE.Range)
-local Rfound = TS:GetTarget(SpellR.Range)
-
-if Efound and E:IsReady() and Config.ComboSub.ValorSub.Esub.useE then 
-
-	E:Cast(Efound)
-
-end 
-
-if QfoundValor and Q:IsReady() and Config.ComboSub.ValorSub.Qsub.useQ then 
-
-	Q:Cast(QfoundValor)
-
-end 
-
-if Rfound and R:IsReady() and Config.ComboSub.ValorSub.Rsub.useR then 
-	if getDmg("R", Rfound, myHero) +50 >= Rfound.health then 
-		CastSpell(_R)
-		print('casted manually')
+		if Rfound and R:IsReady() and Config.ComboSub.ValorSub.Rsub.useR then 
+			if getDmg("R", Rfound, myHero) +50 >= Rfound.health then 
+				CastSpell(_R)
+				print('casted manually')
+			end 
+		end 
 	end 
 end 
 
-end 
 
-end 
-
-
- function KillSteal()
-local Enemies = GetEnemyHeroes()
+function KillSteal()
+	local Enemies = GetEnemyHeroes()
 	for i, enemy in pairs(Enemies) do
- if getDmg("E", enemy, myHero) + 75 > enemy.health and  Config.KS.useQ and GetDistance(enemy) < SpellQ.Range then
-				Q:Cast(enemy)
-			end
+		if getDmg("E", enemy, myHero) + 75 > enemy.health and  Config.KS.useQ and GetDistance(enemy) < SpellQ.Range then
+			Q:Cast(enemy)
 		end
 	end
+end
 
 function OnTick()
-if Loaded then
-
-KillSteal()
---Combo
-if Config.Combo then
-
-Combo()
-
-end
-
-if Config.ComboSub.HumanSub.Esub.useEgap then opshit() end 
-
-end
+	if Loaded then
+		KillSteal()	
+		if Config.Combo then Combo() end
+		if Config.ComboSub.HumanSub.Esub.useEgap then opshit() end 
+	end
 end
 
 function OnGainBuff(unit, buff)
@@ -278,35 +228,26 @@ function OnLoseBuff(unit, buff)
 end
 
 function opshit()
-if not spellExpired and (GetTickCount() - informationTable.spellCastedTick) <= 
-
-(informationTable.spellRange/informationTable.spellSpeed)*1000 then
+	if not spellExpired and (GetTickCount() - informationTable.spellCastedTick) <= (informationTable.spellRange/informationTable.spellSpeed)*1000 then
             local spellDirection     = (informationTable.spellEndPos - informationTable.spellStartPos):normalized()
             local spellStartPosition = informationTable.spellStartPos + spellDirection
             local spellEndPosition   = informationTable.spellStartPos + spellDirection * informationTable.spellRange
             local heroPosition = Point(myHero.x, myHero.z)
-
-            local lineSegment = LineSegment(Point(spellStartPosition.x, spellStartPosition.y), Point(spellEndPosition.x, 
-
-spellEndPosition.y))
+            local lineSegment = LineSegment(Point(spellStartPosition.x, spellStartPosition.y), Point(spellEndPosition.x,spellEndPosition.y))
             
-
-            if lineSegment:distance(heroPosition) <= 200 and E:IsReady() then
-            	
-                CastSpell(_E,unit)
-            end
-						
+        if lineSegment:distance(heroPosition) <= 200 and E:IsReady() then
+        	CastSpell(_E,unit)
         else
-            spellExpired = true
-            informationTable = {}
+    		spellExpired = true
+        	informationTable = {}
         end
-				end
+	end
+end 
 
 function OnProcessSpell(unit, spell)
-if Config.ComboSub.HumanSub.Esub.useEgap then
-				local isAGapcloserUnit = {
-	
-	        ['Aatrox']      = {true, spell = _Q,                  range = 1000,  projSpeed = 1200, },
+	if Config.ComboSub.HumanSub.Esub.useEgap then
+			local isAGapcloserUnit = {
+			['Aatrox']      = {true, spell = _Q,                  range = 1000,  projSpeed = 1200, },
 	        ['Akali']       = {true, spell = _R,                  range = 800,   projSpeed = 2200, }, 
 	        ['Alistar']     = {true, spell = _W,                  range = 650,   projSpeed = 2000, }, 
 	        ['Diana']       = {true, spell = _R,                  range = 825,   projSpeed = 2000, }, 
@@ -331,20 +272,12 @@ if Config.ComboSub.HumanSub.Esub.useEgap then
 	        ['Tristana']    = {true, spell = _W,                  range = 900,   projSpeed = 2000, },
 	        ['Tryndamere']  = {true, spell = 'Slash',             range = 650,   projSpeed = 1450, },
 	        ['XinZhao']     = {true, spell = _E,                  range = 650,   projSpeed = 2000, }, 
-	    }
-	    if unit.type == 'obj_AI_Hero' and unit.team == TEAM_ENEMY and isAGapcloserUnit[unit.charName] and 
-
-GetDistance(unit) < 2000 and spell ~= nil then
-	        if spell.name == (type(isAGapcloserUnit[unit.charName].spell) == 'number' and unit:GetSpellData
-
-(isAGapcloserUnit[unit.charName].spell).name or isAGapcloserUnit[unit.charName].spell) then
-	            if spell.target ~= nil and spell.target.name == myHero.name or isAGapcloserUnit[unit.charName].spell 
-
-== 'blindmonkqtwo' then
-					
-	        		if E:IsReady() then
+	    	}
+	    if unit.type == 'obj_AI_Hero' and unit.team == TEAM_ENEMY and isAGapcloserUnit[unit.charName] and GetDistance(unit) < 2000 and spell ~= nil then
+	        if spell.name == (type(isAGapcloserUnit[unit.charName].spell) == 'number' and unit:GetSpellData(isAGapcloserUnit[unit.charName].spell).name or isAGapcloserUnit[unit.charName].spell) then
+	            if spell.target ~= nil and spell.target.name == myHero.name or isAGapcloserUnit[unit.charName].spell == 'blindmonkqtwo' then
+					if E:IsReady() then
 	        			CastSpell(_E,unit)
-	        			
 	        		end
 	            else
 	                spellExpired = false
@@ -359,8 +292,7 @@ GetDistance(unit) < 2000 and spell ~= nil then
 	            end
 	        end
 	    end
-			end 
-	
+	end 
 end 
 
 
