@@ -1,0 +1,8 @@
+--Lua bridge done by AWA credits goes to bilbao
+loca script = Getscript() 
+local languagerino = script.getLanguage() 
+if languagerino == "C#" then 
+  loaderinoC#Coderino(script) 
+if langguagerino == "Lua" then 
+  loaderinoLuaCoderino(script)
+end 
